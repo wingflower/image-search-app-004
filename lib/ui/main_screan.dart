@@ -14,9 +14,25 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final searchTextEditingController = TextEditingController();
 
+  // final repository = MockImageItemRepository();
+  final repository = PixabayImageItemRepository();
+
+  List<ImageItem> imageItems = [];
+  bool isLoading = false;
+
+  Future<void> searchImage(String query) async {
+    setState(() {
+      isLoading = true;
+    });
+    imageItems = await repository.getImageItems(query);
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   void dispose() {
-    // searchTextEditingController.dispose();
+    searchTextEditingController.dispose();
     super.dispose();
   }
 
@@ -50,35 +66,27 @@ class _MainScreenState extends State<MainScreen> {
                     icon: Icon(Icons.search),
                     color: Color(0xFF4FB6B2),
                     onPressed: () {
-                      setState(() {});
+                      searchImage(searchTextEditingController.text);
                     },
                   ),
                 ),
               ),
               const SizedBox(height: 16),
-              FutureBuilder(
-                future: PixabayImageItemRepository()
-                    .getImageItems(searchTextEditingController.text),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                  List<ImageItem> imageItems = snapshot.data!;
-                  return Expanded(
-                      child: GridView.builder(
-                        itemCount: imageItems.length,
-                        itemBuilder: (context, index) {
-                          final imageItem = imageItems[index];
-                          return ImageItemWidget(imageItem: imageItem);
-                        },
-                        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 16,
-                          mainAxisSpacing: 16,
-                        ),
-                      ),
-                    );
-                },
+              isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Expanded(
+                child: GridView.builder(
+                  itemCount: imageItems.length,
+                  itemBuilder: (context, index) {
+                    final imageItem = imageItems[index];
+                    return ImageItemWidget(imageItem: imageItem);
+                  },
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 16,
+                    mainAxisSpacing: 16,
+                  ),
+                ),
               ),
             ],
           ),
