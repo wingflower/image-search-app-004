@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:image_search_app_004/ui/widget/image_item_widget.dart';
+
+import '../data/model/image_item.dart';
 
 class MainScreen extends StatelessWidget {
+  final double borderValue = 32;
   const MainScreen({super.key});
 
   @override
@@ -32,9 +36,12 @@ class MainScreen extends StatelessWidget {
               Expanded(
                 child: GridView.builder(
                   itemBuilder: (context, index) {
-                    return Container(
-                      color: Colors.purple,
+                    final imageItem = ImageItem(
+                      imageUrl:
+                          'https://cdn.pixabay.com/photo/2017/09/26/13/21/apples-2788599_150.jpg',
+                      tags: 'apple',
                     );
+                    return ImageItemWidget(borderValue: borderValue, imageItem: imageItem);
                   },
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
