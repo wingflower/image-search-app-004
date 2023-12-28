@@ -17,13 +17,16 @@ class _MainScreenState extends State<MainScreen> {
   // final repository = MockImageItemRepository();
   final repository = PixabayImageItemRepository();
 
-  static const double borderValue = 32;
   List<ImageItem> imageItems = [];
+  bool isLoading = false;
 
   Future<void> searchImage(String query) async {
+    setState(() {
+      isLoading = true;
+    });
     imageItems = await repository.getImageItems(query);
     setState(() {
-
+      isLoading = false;
     });
   }
 
@@ -69,7 +72,9 @@ class _MainScreenState extends State<MainScreen> {
                 ),
               ),
               const SizedBox(height: 16),
-              Expanded(
+              isLoading
+              ? Center(child: CircularProgressIndicator())
+              : Expanded(
                 child: GridView.builder(
                   itemCount: imageItems.length,
                   itemBuilder: (context, index) {
