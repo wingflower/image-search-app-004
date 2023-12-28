@@ -14,7 +14,8 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final searchTextEditingController = TextEditingController();
 
-  final repository = MockImageItemRepository();
+  // final repository = MockImageItemRepository();
+  final repository = PixabayImageItemRepository();
 
   static const double borderValue = 32;
   List<ImageItem> imageItems = [];
@@ -43,6 +44,13 @@ class _MainScreenState extends State<MainScreen> {
               TextField(
                 controller: searchTextEditingController,
                 decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: BorderSide(
+                      width: 2,
+                      color: Color(0xFF4FB6B2),
+                    ),
+                  ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16),
                     borderSide: BorderSide(
