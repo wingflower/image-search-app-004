@@ -28,57 +28,59 @@ class _MainScreenState extends State<MainScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-            TextField(
-            controller: searchTextEditingController,
-            decoration: InputDecoration(
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(
-                  width: 2,
-                  color: Color(0xFF4FB6B2),
-                ),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: const BorderSide(
-                  width: 2,
-                  color: Color(0xFF4FB6B2),
-                ),
-              ),
-              hintText: 'Search',
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.search),
-                color: const Color(0xFF4FB6B2),
-                onPressed: () {
-                  setState(() {});
-                },
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          FutureBuilder(
-            future: PixabayImageItemRepository()
-                .getImageItems(searchTextEditingController.text),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(child: CircularProgressIndicator());
-              }
-              List<ImageItem> imageItems = snapshot.data!;
-              return Expanded(
-                child: GridView.builder(
-                  itemCount: imageItems.length,
-                  itemBuilder: (context, index) {
-                    final imageItem = imageItems[index];
-                    return ImageItemWidget(imageItem: imageItem);
-                  },
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    crossAxisSpacing: 16,
-                    mainAxisSpacing: 16,
+              TextField(
+                controller: searchTextEditingController,
+                decoration: InputDecoration(
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(
+                      width: 2,
+                      color: Color(0xFF4FB6B2),
+                    ),
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                    borderSide: const BorderSide(
+                      width: 2,
+                      color: Color(0xFF4FB6B2),
+                    ),
+                  ),
+                  hintText: 'Search',
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.search),
+                    color: const Color(0xFF4FB6B2),
+                    onPressed: () {
+                      setState(() {});
+                    },
                   ),
                 ),
-              );
-            },
+              ),
+              const SizedBox(height: 16),
+              FutureBuilder(
+                future: PixabayImageItemRepository()
+                    .getImageItems(searchTextEditingController.text),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                  List<ImageItem> imageItems = snapshot.data!;
+                  return Expanded(
+                    child: GridView.builder(
+                      itemCount: imageItems.length,
+                      itemBuilder: (context, index) {
+                        final imageItem = imageItems[index];
+                        return ImageItemWidget(imageItem: imageItem);
+                      },
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 16,
+                        mainAxisSpacing: 16,
+                      ),
+                    ),
+                  );
+                },
+              ),
             ],
           ),
         ),
