@@ -14,22 +14,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   final searchTextEditingController = TextEditingController();
 
-  // final repository = MockImageItemRepository();
-  final repository = PixabayImageItemRepository();
-
-  List<ImageItem> imageItems = [];
-  bool isLoading = false;
-
-  Future<void> searchImage(String query) async {
-    setState(() {
-      isLoading = true;
-    });
-    imageItems = await repository.getImageItems(query);
-    setState(() {
-      isLoading = false;
-    });
-  }
-
   @override
   void dispose() {
     searchTextEditingController.dispose();
@@ -44,37 +28,43 @@ class _MainScreenState extends State<MainScreen> {
           padding: const EdgeInsets.all(16),
           child: Column(
             children: [
-              TextField(
-                controller: searchTextEditingController,
-                decoration: InputDecoration(
-                  focusedBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(
-                      width: 2,
-                      color: Color(0xFF4FB6B2),
-                    ),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    borderSide: BorderSide(
-                      width: 2,
-                      color: Color(0xFF4FB6B2),
-                    ),
-                  ),
-                  hintText: 'Search',
-                  suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
-                    color: Color(0xFF4FB6B2),
-                    onPressed: () {
-                      searchImage(searchTextEditingController.text);
-                    },
-                  ),
+            TextField(
+            controller: searchTextEditingController,
+            decoration: InputDecoration(
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  width: 2,
+                  color: Color(0xFF4FB6B2),
                 ),
               ),
-              const SizedBox(height: 16),
-              isLoading
-              ? Center(child: CircularProgressIndicator())
-              : Expanded(
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: const BorderSide(
+                  width: 2,
+                  color: Color(0xFF4FB6B2),
+                ),
+              ),
+              hintText: 'Search',
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.search),
+                color: const Color(0xFF4FB6B2),
+                onPressed: () {
+                  setState(() {});
+                },
+              ),
+            ),
+          ),
+          const SizedBox(height: 16),
+          FutureBuilder(
+            future: PixabayImageItemRepository()
+                .getImageItems(searchTextEditingController.text),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              List<ImageItem> imageItems = snapshot.data!;
+              return Expanded(
                 child: GridView.builder(
                   itemCount: imageItems.length,
                   itemBuilder: (context, index) {
@@ -87,7 +77,8 @@ class _MainScreenState extends State<MainScreen> {
                     mainAxisSpacing: 16,
                   ),
                 ),
-              ),
+              );
+            },
             ],
           ),
         ),
